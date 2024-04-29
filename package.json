@@ -1,18 +1,24 @@
 {
-  "name": "backend",
+  "name": "backend-rendue",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "node --watch --no-warnings src/server.js"
+    "start": "node server.ts",
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.13.0",
     "fastify": "^4.26.1"
+  },
+  "devDependencies": {
+    "prisma": "^5.13.0",
+    "tsx": "^4.7.3",
+    "typescript": "^5.4.5"
   }
 }
