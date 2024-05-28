@@ -1,15 +1,10 @@
 import { FastifyInstance, fastify } from 'fastify';
-import { userRoutes } from './routes/user.routes'
-import { propertyRoutes } from './routes/property.routes'
+import { users } from './routes/users';
 
-const app: FastifyInstance = fastify()
+export const app: FastifyInstance = fastify()
 
-app.register(userRoutes, {
+app.register(users, {
     prefix: '/users'
-})
-
-app.register(propertyRoutes, {
-    prefix: '/properties'
 })
 
 app.listen({
