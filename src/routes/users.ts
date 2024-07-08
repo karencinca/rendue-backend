@@ -3,7 +3,11 @@ import { prisma } from "../database/prisma-client";
 
 export async function users(app: FastifyInstance) {
     app.get('/', async(req, reply) => {
-        const users = await prisma.user.findMany()
+        const users = await prisma.user.findMany({
+            include: {
+                properties: true,
+            },
+        })
         reply.send(users)
     })
 
@@ -12,7 +16,10 @@ export async function users(app: FastifyInstance) {
         const user = await prisma.user.findUnique({
             where: {
                 id
-            }
+            },
+            include: {
+                properties: true,
+            },
         })
         reply.send(user)
     })
