@@ -10,6 +10,22 @@ export async function properties(app:FastifyInstance) {
                         name: true,
                         email: true
                     }
+                },
+                rentals: {
+                    include: {
+                        tenant: {
+                            select: {
+                                name: true,
+                                email: true
+                            }
+                        }
+                    }
+                },
+                tenants: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
                 }
             }
         })

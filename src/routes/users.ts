@@ -5,8 +5,37 @@ export async function users(app: FastifyInstance) {
     app.get('/', async(req, reply) => {
         const users = await prisma.user.findMany({
             include: {
-                properties: true,
-            },
+                properties: {
+                    select: {
+                        name: true,
+                        address: true,
+                        description: true
+                    }
+                },
+                tenants: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                },
+                rentals: {
+                    select: {
+                        property: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        tenant: {
+                            select: {
+                                name: true
+                            }
+                        },
+                        checkin: true,
+                        checkout: true
+                    }
+                }
+    
+            }
         })
         reply.send(users)
     })
@@ -19,6 +48,12 @@ export async function users(app: FastifyInstance) {
             },
             include: {
                 properties: true,
+                tenants: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
             },
         })
         reply.send(user)
