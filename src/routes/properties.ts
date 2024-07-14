@@ -1,5 +1,18 @@
-import { FastifyInstance } from "fastify";
-import { prisma } from "../database/prisma-client";
+import { FastifyInstance } from 'fastify';
+import { prisma } from '../database/prisma-client';
+import multer from 'fastify-multer';
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/')
+    },
+    filename: function(req, file, cb) {
+        let data = new Date().toISOString().replace(/:/g, '-') + '-'
+        cb(null, data + file.originalname )
+    }
+})
+
+const upload = multer({ storage: storage })
 
 export async function properties(app:FastifyInstance) {
     app.get('/', async(req, reply) => {
@@ -45,8 +58,12 @@ export async function properties(app:FastifyInstance) {
         reply.send(property)
     })
 
-    app.post('/', async(req, reply) => {
-        const { name, address, description, image, userId } = req.body
+    app.post(
+        '/', 
+        { preHandler: upload.single('image') }, 
+        async(req, reply) => {
+        const { name, address, description, userId } = req.body
+        const image = req.file.path
         const property = await prisma.property.create({
             data: {
                 name,

@@ -3,8 +3,11 @@ import { users } from './routes/users';
 import { properties } from './routes/properties';
 import { tenants } from './routes/tenants';
 import { rentals } from './routes/rentals';
+import multer from 'fastify-multer';
 
 export const app: FastifyInstance = fastify()
+
+app.register(multer.contentParser)
 
 app.register(users, {
     prefix: '/users'
