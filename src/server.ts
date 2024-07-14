@@ -1,8 +1,8 @@
 import { FastifyInstance, fastify } from 'fastify';
-import { users } from './routes/users';
-import { properties } from './routes/properties';
-import { tenants } from './routes/tenants';
-import { rentals } from './routes/rentals';
+import { users } from './routes/users.routes';
+import { properties } from './routes/properties.routes';
+import { tenants } from './routes/tenants.routes';
+import { rentals } from './routes/rentals.routes';
 import multer from 'fastify-multer';
 
 export const app: FastifyInstance = fastify()

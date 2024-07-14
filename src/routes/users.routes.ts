@@ -1,5 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { prisma } from "../database/prisma-client";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export async function users(app: FastifyInstance) {
     app.get('/', async(req, reply) => {
@@ -59,17 +61,51 @@ export async function users(app: FastifyInstance) {
         reply.send(user)
     })
 
-    app.post('/', async(req, reply) => {
+    app.post('/register', async(req, reply) => {
         const { name, email, password } = req.body
+        
+        const passwordHash = bcrypt.hashSync(password, 10)
+
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
-                password
+                password: passwordHash
+            }
+        })
+        reply.send(user)
+    })
+
+    app.post('/login', async(req, reply) => {
+        const { email, password } = req.body
+        const user = await prisma.user.findFirst({
+            where: {
+                email
             }
         })
 
-        reply.send(user)
+        if (!user) {
+            return reply.status(401).send({ message: 'Email or password incorrect'})
+        }
+
+        const isSamePassword = bcrypt.compareSync(password, user.password)
+
+        if (!isSamePassword) {
+            return reply.status(401).send({ message: 'Email or password incorrect'})
+        }
+
+        const token = jwt.sign({
+            id: user.id,
+            name: user.name,
+            email: user.email
+        }, process.env.JWT_KEY, 
+        {
+            expiresIn: "1h"
+        })
+        return reply.status(200).send({
+            message: 'Successful authenticated',
+            token: token
+        })
     })
 
     app.put('/:id', async(req, reply) => {
