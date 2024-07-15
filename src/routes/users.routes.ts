@@ -1,10 +1,14 @@
 import { FastifyInstance } from "fastify";
 import { prisma } from "../database/prisma-client";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken'
+import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { sign } from "../plugins/jwt";
 
 export async function users(app: FastifyInstance) {
-    app.get('/', async(req, reply) => {
+    app.get('/', 
+        { preHandler: isAuthenticated },
+        async(req, reply) => {
         const users = await prisma.user.findMany({
             include: {
                 properties: {
@@ -94,14 +98,12 @@ export async function users(app: FastifyInstance) {
             return reply.status(401).send({ message: 'Email or password incorrect'})
         }
 
-        const token = jwt.sign({
+        const token = await sign({
             id: user.id,
             name: user.name,
             email: user.email
-        }, process.env.JWT_KEY, 
-        {
-            expiresIn: "1h"
         })
+
         return reply.status(200).send({
             message: 'Successful authenticated',
             token: token
