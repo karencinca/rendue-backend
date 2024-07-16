@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 
-import RentalsController from "../controllers/RentalsController";
+import RentalsController from "../controllers/rentals.controller";
 const rentalsController = new RentalsController()
 
 export async function rentals(app:FastifyInstance) {

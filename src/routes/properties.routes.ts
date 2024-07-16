@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import multer from 'fastify-multer';
 
-import PropertiesController from '../controllers/PropertiesController';
+import PropertiesController from '../controllers/properties.controller';
 const propertiesController = new PropertiesController()
 
 const storage = multer.diskStorage({
