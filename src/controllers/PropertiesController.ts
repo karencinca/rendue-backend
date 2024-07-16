@@ -1,5 +1,4 @@
 import { prisma } from '../database/prisma-client';
-
 class PropertiesController {
     async showAll(req, reply) {
         const properties = await prisma.property.findMany({
