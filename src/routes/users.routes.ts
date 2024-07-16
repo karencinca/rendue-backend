@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 
-import UsersController from '../controllers/users-controller'
+import UsersController from '../controllers/UsersController'
 const usersController = new UsersController()
 
 export async function users(app: FastifyInstance) {
