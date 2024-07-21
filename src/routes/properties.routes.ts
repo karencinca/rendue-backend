@@ -1,25 +1,13 @@
 import { FastifyInstance } from 'fastify';
-import multer from 'fastify-multer';
-
 import PropertiesController from '../controllers/properties.controller';
+import { upload } from '../configs/upload';
 const propertiesController = new PropertiesController()
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'uploads/')
-    },
-    filename: function(req, file, cb) {
-        let data = new Date().toISOString().replace(/:/g, '-') + '-'
-        cb(null, data + file.originalname )
-    }
-})
-
-const upload = multer({ storage: storage })
 
 export async function properties(app:FastifyInstance) {
-    app.get('/', propertiesController.showAll)
+    app.get('/', propertiesController.findAll)
 
-    app.get('/:id', propertiesController.showUnique)
+    app.get('/:id', propertiesController.findById)
 
     app.post(
         '/', 

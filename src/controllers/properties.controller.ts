@@ -1,98 +1,40 @@
-import { prisma } from '../database/prisma-client';
+import PropertyUseCase from '../usecases/property.usecase';
+
+const propertyUseCase = new PropertyUseCase()
 class PropertiesController {
-    async showAll(req, reply) {
-        const properties = await prisma.property.findMany({
-            include: {
-                user: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                },
-                rentals: {
-                    include: {
-                        tenant: {
-                            select: {
-                                name: true,
-                                email: true
-                            }
-                        }
-                    }
-                },
-                tenants: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                }
-            }
-        })
-        reply.send(properties)
+    async findAll(req: any, reply: any) {
+        const properties = await propertyUseCase.findAll()
+        return reply.code(200).send(properties)
     }
 
-    async showUnique(req, reply) {
+    async findById(req: any, reply: any) {
         const { id } = req.params
-        const property = await prisma.property.findUnique({
-            where: {
-                id, 
-            },
-            include: {
-                user: true,
-            }
-        })
-        reply.send(property)
+        const property = await propertyUseCase.findById(id)
+        return reply.code(200).send(property)
     }
 
-    async create(req, reply) {
+    async create(req: any, reply: any) {
         const { name, address, description, userId } = req.body
         const image = req.file.path
-        const property = await prisma.property.create({
-            data: {
-                name,
-                address,
-                description,
-                image,
-                userId
-            }
-        })
-        reply.send(property)
+        const property = await propertyUseCase.create({ name, address, description, image, userId })
+        return reply.code(200).send(property)
     }
 
-    async update(req, reply) {
+    async update(req: any, reply: any) {
         const { id } = req.params
-        const { name, address, description, image, userId } = req.body
-
-        const property = await prisma.property.findUnique({
-            where: { id }
+        const { name, address, description, image } = req.body
+        const data = await propertyUseCase.update(id, {
+            name,
+            address,
+            description,
+            image
         })
-
-        if (!property) {
-            reply.code(404).send('Property not found')
-        }
-
-        const updateProperty = await prisma.property.update({
-            where: {
-                id
-            },
-            data: {
-                name: name || property?.name,
-                address: address || property?.address,
-                description: description || property?.description,
-                image: image || property?.image,
-                userId: userId || property?.userId
-            }
-        })
-
-        reply.send(updateProperty)
+        return reply.code(200).send(data)
     }
 
-    async delete(req, reply) {
+    async delete(req: any, reply: any) {
         const { id } = req.params
-
-        const property = await prisma.property.delete({
-            where: { id }
-        })
-        reply.code(200)
+        const result = await propertyUseCase.delete(id)
     }
 }
 

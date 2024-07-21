@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
-import { sign } from "../plugins/jwt";
+import { sign } from "../configs/jwt";
 import UserUseCase from "../usecases/user.usecases";
 
-const userUseCase = new UserUseCase
+const userUseCase = new UserUseCase()
 class UsersController {
     async findAll(req: any, reply: any) {
         const result = await userUseCase.findAll()

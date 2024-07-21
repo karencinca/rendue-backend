@@ -2,12 +2,10 @@ import { User, UserCreate, UserUpdate } from "../interfaces/user.interface"
 import UserRepositoryPrisma from "../repositories/user.repository"
 import UserRepository from "../repositories/user.repository"
 
-
 class UserUseCase {
     private userRepository: UserRepository
     constructor(){
         this.userRepository = new UserRepositoryPrisma()
-
     }
 
     async create({name, email, password}:UserCreate): Promise<User> {

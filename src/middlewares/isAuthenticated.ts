@@ -1,4 +1,4 @@
-import { verify } from "../plugins/jwt"
+import { verify } from "../configs/jwt"
 
 export async function isAuthenticated(req, reply) {
     const rawToken = req.headers.authorization
