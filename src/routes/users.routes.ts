@@ -7,10 +7,10 @@ const usersController = new UsersController()
 export async function users(app: FastifyInstance) {
     app.get('/', 
         { preHandler: isAuthenticated },
-        usersController.showAll
+        usersController.findAll
     )
     
-    app.get('/:id', usersController.showUnique)
+    app.get('/:id', usersController.findById)
 
     app.post('/register', usersController.create)
 

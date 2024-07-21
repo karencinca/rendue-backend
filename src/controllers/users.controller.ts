@@ -1,87 +1,37 @@
-import { prisma } from "../database/prisma-client";
 import bcrypt from "bcrypt";
 import { sign } from "../plugins/jwt";
+import UserUseCase from "../usecases/user.usecases";
 
+const userUseCase = new UserUseCase
 class UsersController {
-    async showAll(req, reply) {
-        const users = await prisma.user.findMany({
-            include: {
-                properties: {
-                    select: {
-                        name: true,
-                        address: true,
-                        description: true
-                    }
-                },
-                tenants: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                },
-                rentals: {
-                    select: {
-                        property: {
-                            select: {
-                                name: true
-                            }
-                        },
-                        tenant: {
-                            select: {
-                                name: true
-                            }
-                        },
-                        checkin: true,
-                        checkout: true
-                    }
-                }
-    
-            }
-        })
-        reply.send(users)
+    async findAll(req: any, reply: any) {
+        const result = await userUseCase.findAll()
+        return reply.code(200).send(result)
     }
 
-    async showUnique(req, reply) {
+    async findById(req: any, reply: any) {
         const { id } = req.params
-        const user = await prisma.user.findUnique({
-            where: {
-                id
-            },
-            include: {
-                properties: true,
-                tenants: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                }
-            },
-        })
-        reply.send(user)
+        const result = await userUseCase.findById(id)
+        return reply.code(200).send(result)
     }
 
-    async create(req, reply) {
+    async create(req: any, reply: any) {
         const { name, email, password } = req.body
-        
-        const passwordHash = bcrypt.hashSync(password, 10)
-
-        const user = await prisma.user.create({
-            data: {
+        try {
+            const data = await userUseCase.create({
                 name,
                 email,
-                password: passwordHash
-            }
-        })
-        reply.send(user)
+                password
+            })
+            return reply.code(200).send(data)
+        } catch (error) {
+            reply.send(error)
+        }
     }
 
-    async login(req, reply) {
+    async login(req: any, reply: any) {
         const { email, password } = req.body
-        const user = await prisma.user.findFirst({
-            where: {
-                email
-            }
-        })
+        const user = await userUseCase.findByEmail(email)
 
         if (!user) {
             return reply.status(401).send({ message: 'Email or password incorrect'})
@@ -105,40 +55,20 @@ class UsersController {
         })
     }
 
-    async update(req, reply) {
+    async update(req: any, reply: any) {
         const { id } = req.params
         const {name, email, password} = req.body
-
-        const user = await prisma.user.findUnique({
-            where: { id }
+        const data = await userUseCase.update(id, { 
+            name,
+            email,
+            password
         })
-
-        if (!user) {
-            reply.code(404).send('User not found')
-        }
-
-        const updateUser = await prisma.user.update({
-            where: {
-                id
-            },
-            data: {
-                name: name || user?.name,
-                email: email || user?.email,
-                password: password || user?.password
-            }
-        })
-
-        reply.send(updateUser)
+        return reply.send(data)
     }
 
-    async delete(req, reply) {
+    async delete(req: any, reply: any) {
         const { id } = req.params
-
-        const user = await prisma.user.delete({
-            where: { id }
-        })
-
-        reply.code(200)
+        const user = await userUseCase.delete(id)
     }
 }
 
