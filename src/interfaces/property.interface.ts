@@ -21,7 +21,7 @@ export interface PropertyUpdate {
     name?: string,
     address?: string,
     description?: string,
-    image?: string
+    image?: string,
 }
 
 export interface Properties {

@@ -59,8 +59,10 @@ class PropertyRepositoryPrisma implements PropertyRepository {
     }
 
     async update(id: string, data: PropertyUpdate): Promise<Property | null> {
-        const property = await prisma.property.findUnique({
-            where: { id }
+        const property = await prisma.property.findFirst({
+            where: {
+                id
+            }
         })
 
         const updatedProperty = await prisma.property.update({

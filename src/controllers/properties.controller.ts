@@ -27,7 +27,7 @@ class PropertiesController {
             name,
             address,
             description,
-            image
+            image,
         })
         return reply.code(200).send(data)
     }
