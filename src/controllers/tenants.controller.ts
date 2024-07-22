@@ -1,89 +1,41 @@
-import { prisma } from "../database/prisma-client";
+import TenantUseCase from "../usecases/tenant.usecase";
 
+const tenantUseCase = new TenantUseCase()
 class TenantsController {
-    async showAll(req, reply) {
-        const tenants = await prisma.tenant.findMany({
-            include: {
-                rentals: {
-                    select: {
-                        property: {
-                            select: {
-                                name: true,
-                            }
-                        },
-                        checkin: true,
-                        checkout: true
-                    }
-                }
-            }
-        })
+    async findAll(req: any, reply: any) {
+        const tenants = await tenantUseCase.findAll()
         reply.send(tenants)
     }
 
-    async showUnique(req, reply) {
+    async findById(req: any, reply: any) {
         const { id } = req.params
-        const tenant = await prisma.tenant.findUnique({
-            where: { id },
-            include: {
-                rentals: {
-                    select: {
-                        property: {
-                            select: {
-                                name: true
-                            }
-                        },
-                        checkin: true,
-                        checkout: true
-                    }
-                }
-            }
-        })
+        const tenant = await tenantUseCase.findById(id)
         reply.send(tenant)
     }
 
-    async create(req, reply) {
-        const { name, email, userId, propertyId } = req.body
-        const tenant = await prisma.tenant.create({
-            data: {
-                name,
-                email,
-                userId,
-                propertyId
-            }
-        })
-        reply.send(tenant)
-    }
-
-    async update(req, reply) {
-        const { id } = req.params
+    async create(req: any, reply: any) {
         const { name, email, userId } = req.body
-
-        const tenant = await prisma.tenant.findUnique({
-            where: { id }
+        const data = await tenantUseCase.create({
+            name,
+            email,
+            userId
         })
-
-        if (!tenant) {
-            reply.code(404).send('Tenant not found')
-        }
-
-        const updateTenant = await prisma.tenant.update({
-            where: { id },
-            data: {
-                name: name || tenant?.name,
-                email: email || tenant?.email,
-                userId: userId || tenant?.userId
-            }
-        })
-
-        reply.send(updateTenant)
+        return reply.code(200).send(data)
     }
 
-    async delete(req, reply) {
+    async update(req: any, reply: any) {
         const { id } = req.params
-
-        const tenant = await prisma.tenant.delete({
-            where: { id }
+        const { name, email } = req.body
+        const tenant = await tenantUseCase.update(id, {
+            name,
+            email
         })
+        return reply.code(200).send(tenant)
+    }
+
+    async delete(req: any, reply: any) {
+        const { id } = req.params
+        const tenant = await tenantUseCase.delete(id)
         reply.code(200)
     }
 }

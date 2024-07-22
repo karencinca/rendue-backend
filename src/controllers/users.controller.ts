@@ -17,16 +17,12 @@ class UsersController {
 
     async create(req: any, reply: any) {
         const { name, email, password } = req.body
-        try {
-            const data = await userUseCase.create({
+        const data = await userUseCase.create({
                 name,
                 email,
                 password
-            })
+        })
             return reply.code(200).send(data)
-        } catch (error) {
-            reply.send(error)
-        }
     }
 
     async login(req: any, reply: any) {

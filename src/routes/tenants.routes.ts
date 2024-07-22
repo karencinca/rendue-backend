@@ -4,9 +4,9 @@ import TenantsController from "../controllers/tenants.controller";
 const tenantsController = new TenantsController()
 
 export async function tenants(app:FastifyInstance) {
-    app.get('/', tenantsController.showAll)
+    app.get('/', tenantsController.findAll)
 
-    app.get('/:id', tenantsController.showUnique)
+    app.get('/:id', tenantsController.findById)
 
     app.post('/', tenantsController.create)
 

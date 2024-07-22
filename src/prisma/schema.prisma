@@ -15,8 +15,8 @@ model User {
   updatedAt  DateTime   @updatedAt
   password   String
   properties Property[]
-  tenants    Tenant[]
   rentals    Rental[]
+  tenants    Tenant[]
 
   @@map("users")
 }
@@ -32,7 +32,7 @@ model Property {
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   rentals     Rental[]
-  tenants     Tenant[]
+  tenants     Tenant[] @relation("PropertyToTenant")
 
   @@map("properties")
 }
@@ -45,9 +45,9 @@ model Tenant {
   updatedAt  DateTime   @updatedAt
   userId     String
   propertyId String?
-  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  properties Property[]
   rentals    Rental[]
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  properties Property[] @relation("PropertyToTenant")
 
   @@map("tenants")
 }
@@ -56,12 +56,12 @@ model Rental {
   id         String   @id @default(uuid())
   checkin    DateTime
   checkout   DateTime
-  userId     String
-  propertyId String
   tenantId   String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId String
+  userId     String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@map("rentals")
 }
