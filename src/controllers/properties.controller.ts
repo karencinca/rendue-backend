@@ -34,7 +34,8 @@ class PropertiesController {
 
     async delete(req: any, reply: any) {
         const { id } = req.params
-        const result = await propertyUseCase.delete(id)
+        const property = await propertyUseCase.delete(id)
+        reply.code(200)
     }
 }
 
