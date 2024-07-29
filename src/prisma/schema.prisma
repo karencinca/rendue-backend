@@ -54,8 +54,8 @@ model Tenant {
 
 model Rental {
   id         String   @id @default(uuid())
-  checkin    DateTime
-  checkout   DateTime
+  checkin    DateTime @db.Date
+  checkout   DateTime @db.Date
   tenantId   String
   propertyId String
   userId     String

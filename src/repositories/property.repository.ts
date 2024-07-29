@@ -34,12 +34,6 @@ class PropertyRepositoryPrisma implements PropertyRepository {
                             }
                         }
                     }
-                },
-                tenants: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
                 }
             }
         })

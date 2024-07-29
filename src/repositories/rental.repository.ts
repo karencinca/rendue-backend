@@ -3,14 +3,31 @@ import { Rental, RentalCreate, RentalRepository, RentalUpdate } from "../interfa
 
 class RentalRepositoryPrisma implements RentalRepository {
     async create(data: RentalCreate): Promise<Rental> {
-        const { checkin, checkout, tenantId, propertyId, userId } = data
+        const overlappingRental = await prisma.rental.findMany({
+            where: {
+                propertyId: data.propertyId,
+    
+                checkout: {
+                    gte: new Date(data.checkin)
+                },
+                checkin: {
+                    lte: new Date(data.checkout)
+                }
+            }, 
+        })
+        if(overlappingRental.length > 0) {
+            throw new Error('Property already booked for these dates.')
+        }
+
+        const checkinDate = new Date(data.checkin)
+        const checkoutDate = new Date(data.checkout)
         const rental = await prisma.rental.create({
             data: {
-                checkin,
-                checkout,
-                tenantId,
-                propertyId,
-                userId
+                checkin: checkinDate,
+                checkout: checkoutDate,
+                tenantId: data.tenantId,
+                propertyId: data.propertyId,
+                userId: data.userId
             }
         })
         return rental

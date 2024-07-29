@@ -10,8 +10,6 @@ class RentalUseCase {
     async create({ checkin, checkout, tenantId, propertyId, userId}: RentalCreate): Promise<Rental> {
         const rental = await this.rentalRepository.create({ checkin, checkout, tenantId, propertyId, userId })
         return rental
-        //fazer validações com datas
-        //não criar rental para property com data conflitante, por exemplo
     }
 
     async findAll(): Promise<Rental[]> {
