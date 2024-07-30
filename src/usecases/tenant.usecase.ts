@@ -1,5 +1,6 @@
 import { Tenant, TenantCreate, TenantRepository, TenantUpdate } from "../interfaces/tenant.interface";
 import TenantRepositoryPrisma from "../repositories/tenant.repository";
+import { AppError } from "../utils/AppError";
 
 class TenantUseCase {
     private tenantRepository: TenantRepository
@@ -10,7 +11,7 @@ class TenantUseCase {
     async create({ name, email, userId }: TenantCreate): Promise<Tenant> {
         const tenantExists = await this.tenantRepository.findByEmail(email)
         if (tenantExists) {
-            throw new Error('You already have a tenant with this email')
+            throw new AppError('You already have a tenant with this email')
         }
         const tenant = await this.tenantRepository.create({ name, email, userId})
         return tenant
@@ -24,7 +25,7 @@ class TenantUseCase {
     async findByEmail(email: string): Promise<Tenant | null> {
         const tenant = await this.tenantRepository.findByEmail(email)
         if (!tenant) {
-            throw new Error('User not find')
+            throw new AppError('User not find')
         }
         return tenant
     }
@@ -32,7 +33,7 @@ class TenantUseCase {
     async findById(id: string): Promise<Tenant | null> {
         const tenant = await this.tenantRepository.findById(id)
         if (!tenant) {
-            throw new Error('User not find')
+            throw new AppError('User not find')
         }
         return tenant
     }

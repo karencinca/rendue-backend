@@ -1,5 +1,6 @@
 import { Property, PropertyCreate, PropertyRepository, PropertyUpdate } from "../interfaces/property.interface"
 import PropertyRepositoryPrisma from "../repositories/property.repository"
+import { AppError } from "../utils/AppError"
 
 class PropertyUseCase {
     private propertyRepository: PropertyRepository
@@ -20,7 +21,7 @@ class PropertyUseCase {
     async findById(id: string): Promise<Property | null> {
         const property = await this.propertyRepository.findById(id)
         if (!property) {
-            throw new Error('Property not found')
+            throw new AppError('Property not found')
         }
         return property
     }
@@ -28,7 +29,7 @@ class PropertyUseCase {
     async update(id: string, data: PropertyUpdate): Promise<Property | null> {
         const property = await this.propertyRepository.update(id, data)
         if (!property) {
-            throw new Error('Property not found')
+            throw new AppError('Property not found')
         }
         return property
     }

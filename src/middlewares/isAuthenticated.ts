@@ -1,6 +1,6 @@
 import { verify } from "../configs/jwt"
 
-export async function isAuthenticated(req, reply) {
+export async function isAuthenticated(req: any, reply: any) {
     const rawToken = req.headers.authorization
     const tokenParts = rawToken.split('Bearer ')
     const accessToken = tokenParts?.[1]

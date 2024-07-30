@@ -1,5 +1,6 @@
 import { Rental, RentalCreate, RentalRepository, RentalUpdate } from "../interfaces/rental.interface";
 import RentalRepositoryPrisma from "../repositories/rental.repository";
+import { AppError } from "../utils/AppError";
 
 class RentalUseCase {
     private rentalRepository: RentalRepository
@@ -20,7 +21,7 @@ class RentalUseCase {
     async findById(id: string): Promise<Rental | null> {
         const rental = await this.rentalRepository.findById(id)
         if(!rental) {
-            throw new Error('Rental not found')
+            throw new AppError('Rental not found')
         }
         return rental
     }
@@ -28,7 +29,7 @@ class RentalUseCase {
     async update(id: string, data: RentalUpdate): Promise<Rental> {
         const rental = await this.rentalRepository.update(id, data)
         if(!rental) {
-            throw new Error('Rental not found')
+            throw new AppError('Rental not found')
         }
         return rental
     }

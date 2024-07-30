@@ -1,6 +1,7 @@
 import { User, UserCreate, UserUpdate } from "../interfaces/user.interface"
 import UserRepositoryPrisma from "../repositories/user.repository"
 import UserRepository from "../repositories/user.repository"
+import { AppError } from "../utils/AppError"
 
 class UserUseCase {
     private userRepository: UserRepository
@@ -12,7 +13,7 @@ class UserUseCase {
         const userExists = await this.userRepository.findByEmail(email)
 
         if (userExists) {
-            throw new Error('User already exists')
+            throw new AppError('User already exists')
         }
 
         const result = await this.userRepository.create({name, email, password})

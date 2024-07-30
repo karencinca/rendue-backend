@@ -1,5 +1,6 @@
 import { prisma } from "../database/prisma-client";
 import { Rental, RentalCreate, RentalRepository, RentalUpdate } from "../interfaces/rental.interface";
+import { AppError } from "../utils/AppError";
 
 class RentalRepositoryPrisma implements RentalRepository {
     async create(data: RentalCreate): Promise<Rental> {
@@ -16,7 +17,7 @@ class RentalRepositoryPrisma implements RentalRepository {
             }, 
         })
         if(overlappingRental.length > 0) {
-            throw new Error('Property already booked for these dates.')
+            throw new AppError('Property already booked for these dates.')
         }
 
         const checkinDate = new Date(data.checkin)
